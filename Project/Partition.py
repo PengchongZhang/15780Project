@@ -123,6 +123,21 @@ class Partition:
 		return result.index(max(result))
 	
 	'''
+	Calculate the result based on Integer Programming
+	@:param: E_dev_new (the dev estimation value for each subTasks) N x subTasks Size
+	@:param:
+	@:return
+	'''
+	def IPsolver(self, E_dev_new):
+	
+	
+	
+	
+	
+	
+	
+	
+	'''
 	Main function handling whole logic
 	DevepolerNum: N
 	TaskNum: M
