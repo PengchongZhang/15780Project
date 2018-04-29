@@ -1,1 +1,20 @@
 .idea/
+
+# db file
+*.sqlite3
+
+# Byte-compiled / optimized /DLL
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django section #
+*.log
+*.pot
+*.pyc
+local_settings.py
+*.py[cod]
+migrations
+
+# Mac OS file
+.DS_Store
