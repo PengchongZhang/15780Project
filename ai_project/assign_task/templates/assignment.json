@@ -1,0 +1,21 @@
+{
+  "task_number": "3",
+  "developer_number": "4",
+  "estimations": [
+    {
+      "task_index": "1",
+      "estimation": "5"
+    }
+  ],
+  "assignment": [
+    {
+      "developer": "1",
+      "task": [
+        {
+          "task_index": "1",
+          "work_proportion": "50"
+        }
+      ]
+    }
+  ]
+}
