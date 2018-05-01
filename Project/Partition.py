@@ -7,8 +7,6 @@ from heapdict import heapdict
 #
 # Create obj for Partition
 # Run the hander(xx) function
-
-
 class Partition:
 	'''
 	Calculate the index of the expert based on Bonda vote algorithm
@@ -167,73 +165,87 @@ class Partition:
 		# Form and solve problem.
 		prob = Problem(obj, constraints)
 		result = prob.solve()
-		print("status:", prob.status)
-		print("optimal value", prob.value)
-		print("x value is ", x.value)
-		print("result is ", result)
+		#print("status:", prob.status)
+		#print("optimal value", prob.value)
+		#print("x value is ", x.value)
+		#print("result is ", result)
 		
 		# Integer Programming
 		# push the original solution to the frontier
 		frontier = heapdict()
 		frontier[tuple(constraints)] = result
-		
-		# branch and bound
-		# step 1: find the first index in matrix that is not an integer
-		r, c = self.helper(E_dev_new_arr)
-		
-		
-		
-		
-		
-		
-		
-		while len(frontier) > 0:
-			sol, obj = frontier.popitem()
-			new_prob = cp.Problem(objective, list(sol[0]))
-			new_prob.solve()
-			add_constraint = list(sol[1])
-			split_index = -1
-			diff = 0
-			split_constraint = []
-			for i in range(0, 9):
-				for j in range(0, 9):
-					for k in range(0, 9):
-						index = (i * 9 + j) * 9 + k
-						if x.value[index] > 0.995:
-							solved_puzzle[i][j] = k + 1
-						elif x.value[index] > 0.005:  # not integered value
-							if split_index == -1 or abs(x.value[index] - 0.5) < diff:
-								split_index = index
-								split_constraint = [i + 1, j + 1, k + 1]
-								diff = abs(x.value[index] - 0.5)
 
-			if split_index != -1:  # split and push to frontier
-				split_constraint.append(0)
-				for i in range(0, 2):
-					new_constraints = list(sol[0])
-					new_add_constraint = list(sol[1])
-					new_constraints += [x[split_index] == i]
-					split_constraint[3] = i
-					new_add_constraint.append(tuple(split_constraint))
-					new_prob = cp.Problem(objective, new_constraints)
-					new_result = new_prob.solve()
-					if new_prob.status == "optimal":
-						frontier[tuple(new_constraints), tuple(new_add_constraint)] = new_result
-      
-		return solved_puzzle, add_constraint
-	
+		while len(frontier) > 0:
+			# step 1: pop the item with minimum f_value
+			constraints, value = frontier.popitem()
+			
+			# avoid None value, reassign x by solving the same problem
+			target = mul_elemwise(E_dev_new_arr, x)
+			row_sums = sum_entries(target, axis=1)
+			obj = Minimize(sum_entries(row_sums))
+			
+			# Form and solve problem.
+			prob = Problem(obj, list(constraints))
+			prob.solve()
+			
+			# step 2: check: find the first index in matrix that is not an integer
+			# print('top: x value is ', x.value)
+			r, c = self.helper(N, subTask, x)
+			if r == -1:
+				return self.transferX(N, subTask, x), value
+			else:
+				# step 3: add the constraint and do dfs
+				new_constraints_zero = list(constraints)
+				new_constraints_zero += [x[r, c] == 0]
+				target = mul_elemwise(E_dev_new_arr, x)
+				row_sums = sum_entries(target, axis=1)
+				obj = Minimize(sum_entries(row_sums))
+				
+				# Form and solve problem.
+				prob = Problem(obj, new_constraints_zero)
+				result = prob.solve()
+				if prob.status == "optimal":
+					frontier[tuple(new_constraints_zero)] = (result, x)
+					#print("x value is ", x.value)
+				#print("x value is ", x.value)
+				
+				new_constraints_one = list(constraints)
+				new_constraints_one += [x[r, c] == 1]
+				target = mul_elemwise(E_dev_new_arr, x)
+				row_sums = sum_entries(target, axis=1)
+				obj = Minimize(sum_entries(row_sums))
+				
+				# Form and solve problem.
+				prob = Problem(obj, new_constraints_one)
+				result = prob.solve()
+				if prob.status == "optimal":
+					frontier[tuple(new_constraints_one)] = (result, x)
+					#print("x value is ", x.value)
+				#print("x value is ", x.value)
+		return self.twoDArray(N, subTask), 0
+		
 	'''
 	helper function: find the smallest index whose value is not an integer
 	'''
-	def helper(self, twoDArray):
-		row = len(twoDArray)
-		col = len(twoDArray[0])
-		
+	def helper(self, row, col, x):
 		for r in range(row):
 			for c in range(col):
-				if 0.005 <= twoDArray[r][c] <= 0.995: # not an integer
+				if 0.005 <= x.value[r, c] <= 0.995: # not an integer
 					return r, c
-		return -1
+		return -1, -1
+	
+	'''
+	Transfer x variable to 2d array
+	'''
+	def transferX(self, row, col, x):
+		array = []
+		for r in range(row):
+			array.append([])
+			for c in range(col):
+				array[r].append(x.value[r, c])
+		return array
+	
+	
 	
 	'''
 	Main function handling whole logic
@@ -266,12 +278,44 @@ class Partition:
 		#return E_dev_new, E_mix_new
 		
 		# Step 5: Solve the IP and return the task assignment and task proportion
-		self.IPsolver(E_dev_new, E_mix_new, avg)
+		result_twoDarray, optimal_value = self.IPsolver(E_dev_new, E_mix_new, avg)
+		self.test_shown(result_twoDarray)
+		print('result')
+	
+	
+	'''
+	Test use: print each value in a two d array
+	'''
+	def test_shown(self, twoDarray):
+		row = len(twoDarray)
+		col = len(twoDarray[0])
+		for r in range(row):
+			list = []
+			for c in range(col):
+				list.append(twoDarray[r][c])
+			print(list)
+	
+	
+	
+	'''
+	Helper function display the result
+	'''
+	# def format_result(self, twoDArray, value):
+	# 	row = len(twoDArray)
+	# 	col = len(twoDArray[0])
+	#
+	# 	for r in range(row):
+	# 		print('For developer ', r)
+	# 		for c in range(col):
+	# 			if twoDArray[r][c] < 0.005:
+	#
+	#
+	# 			print('The value : {}'.format(heuristic_misplaced(initState)))
+	
 	
 	'''
 	Helper function for testing
 	'''
-	
 	def twoDArray(self, userNum, taskNum):
 		# w, h = 8, 5
 		row, col = userNum, taskNum
@@ -283,14 +327,14 @@ if __name__ == '__main__':
 	obj = Partition()
 	developerNum = 2
 	TaskNum = 3
-	expertWeight = 0.6
+	expertWeight = 0.8
 	
 	devEstVal = []
 	for i in range(developerNum):
 		devEstVal.append([])
 	
-	devEstVal[0] = [5, 60, 2]
-	devEstVal[1] = [1123, 112, 1]
+	devEstVal[0] = [1, 1, 1]
+	devEstVal[1] = [1, 1, 1]
 	
 	devExpRank = []
 	for i in range(developerNum):
