@@ -60,6 +60,7 @@ def extract_input(post_data):
 
 
 def format_output(mix_est, dev_workload):
+    print(mix_est)
     for i in range(len(mix_est)):
         mix_est[i] = round(mix_est[i], 2)
     assignment = []
@@ -87,7 +88,6 @@ def solve_assignment(request):
             return JsonResponse({'valid': False})
         else:
             solver = Partition()
-            print(input_data)
             expert, est, workload = solver.handler(input_data[0], input_data[1],
                                                    input_data[2], input_data[3], input_data[4])
             context = format_output(est, workload)

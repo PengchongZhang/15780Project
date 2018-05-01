@@ -36,7 +36,12 @@ function cleanUpForm() {
     $('#developer-number').val("");
     $('#numbers').show();
     $('#expert-weight').val("");
+    $('#cancel-btn-1').hide();
+    $('#submit-btn').hide();
+    $('#intro').hide();
     weightInput.hide();
+    $('#res').hide();
+    $('#task-form').show();
 }
 
 function showEstRes (estimate) {
