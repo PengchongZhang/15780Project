@@ -7,7 +7,7 @@ import json
 # Create your views here.
 # render the index page
 def index(request):
-    return HttpResponse('This is the index page.')
+    return render(request, 'index.html')
 
 
 # api for solving the task assignment problem
