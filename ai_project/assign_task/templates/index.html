@@ -12,9 +12,9 @@
     <div id="numbers">
         {% csrf_token %}
         <label for="task-number">Number of tasks:</label>
-        <input type="number" name="task-number" id="task-number" min="2" max="10">
+        <input type="number" name="task-number" id="task-number" min="1">
         <label for="developer-number">Number of developers:</label>
-        <input type="number" name="developer-number" id="developer-number" min="2" max="10">
+        <input type="number" name="developer-number" id="developer-number" min="1">
         <button id="numbers-btn">OK</button>
     </div>
     <div id="weight-input" hidden>
