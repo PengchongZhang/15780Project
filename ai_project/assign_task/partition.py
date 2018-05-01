@@ -86,7 +86,7 @@ class Partition:
     checking
     '''
 
-    def partition(self, avg, task_objects):
+    def partition(self, avg, task_objects, E_mix):
         M = len(task_objects)
         dict = {}
         for i in range(M):  # M keys, list as value
@@ -114,6 +114,12 @@ class Partition:
                     dict[task_objects[right].index].append(task_objects[right].estVal)
                     task_objects[left].estVal += task_objects[right].estVal
                     right -= 1
+        
+        if sum(dict[task_objects[left].index]) < E_mix[task_objects[left].index]:
+            remain = E_mix[task_objects[left].index] - sum(dict[task_objects[left].index])
+            dict[task_objects[left].index].append(remain)
+        
+        
         return dict
 
     '''
@@ -277,16 +283,16 @@ class Partition:
 
         # Step 2: calculate the E_mix
         E_mix = self.calEstimationMix(devEstVal, expertIdx, expertWeight)
-        print(E_mix)
+        #print(E_mix)
 
         # Step 3: partition the M tasks into feasible subTasks for IP
         avg = self.calAverage(E_mix, developerNum)
         task_objects = self.sortTask(E_mix)
-        dict = self.partition(avg, task_objects)
+        dict = self.partition(avg, task_objects, E_mix)
 
         # Step 4: update the E_mix and E_dev to E_mix_new and E_dev_new based on the subTasks
         E_mix_new, E_dev_new, Task_prop = self.update(E_mix, devEstVal, dict)
-        print(E_mix_new)
+        #print(E_mix_new)
 
         # return E_dev_new, E_mix_new
 
@@ -326,7 +332,7 @@ class Partition:
 
 if __name__ == '__main__':
     obj = Partition()
-    developerNum = 4
+    developerNum = 3
     TaskNum = 5
     expertWeight = 0.5
 
@@ -334,17 +340,17 @@ if __name__ == '__main__':
     for i in range(developerNum):
         devEstVal.append([])
 
-    devEstVal[0] = [20, 3, 5, 7, 9]
+    devEstVal[0] = [20, 3, 15, 7, 9]
     devEstVal[1] = [5, 19, 6, 8, 10]
     devEstVal[2] = [6, 4, 40, 7, 11]
-    devEstVal[3] = [7, 5, 5, 8, 30]
+    # devEstVal[3] = [7, 125, 5, 8, 30]
 
     devExpRank = []
     for i in range(developerNum):
         devExpRank.append([])
-    devExpRank[0] = [0, 1,2,3]
+    devExpRank[0] = [0,1,2,3]
     devExpRank[1] = [1,2,3,0]
     devExpRank[2] = [2,3,0,1]
-    devExpRank[3] = [3,0,1,2]
+    # devExpRank[3] = [3,0,1,2]
 
     obj.handler(developerNum, TaskNum, expertWeight, devEstVal, devExpRank)
