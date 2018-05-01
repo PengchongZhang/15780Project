@@ -251,8 +251,8 @@ class Partition:
 	def handler(self, developerNum, TaskNum, expertWeight, devEstVal, devExpRank):
 		# corner case:
 		if developerNum == 1:
-			return devEstVal, devEstVal
-		
+			return 0, devEstVal, [[1 for x in range(TaskNum)]]
+			
 		# Step 1: vote for expert
 		expertIdx = self.bondaVote(devExpRank)
 		
@@ -278,6 +278,7 @@ class Partition:
 		result_twoDarray, optimal_value = self.IPsolver(E_dev_new, E_mix_new, avg)
 		result = self.cal_assignment(developerNum, TaskNum, result_twoDarray, Task_prop)
 		print('result is ', result)
+		return expertIdx, E_mix, result
 		
 	'''
 	Test use: print each value in a two d array
@@ -306,24 +307,26 @@ class Partition:
 
 if __name__ == '__main__':
 	obj = Partition()
-	developerNum = 3
+	developerNum = 1
 	TaskNum = 5
 	expertWeight = 0.6
 	
 	devEstVal = []
 	for i in range(developerNum):
 		devEstVal.append([])
-	
-	devEstVal[0] = [6, 7, 3, 8, 15]
-	devEstVal[1] = [4, 10, 2, 12,4]
-	devEstVal[2] = [5, 9, 4, 9, 6]
+		
+	devEstVal[0] = [1,2,3, 4, 5]
+	# devEstVal[0] = [6, 7, 3, 8, 15]
+	# devEstVal[1] = [4, 10, 2, 12,4]
+	# devEstVal[2] = [5, 9, 4, 9, 6]
 	
 	devExpRank = []
 	for i in range(developerNum):
 		devExpRank.append([])
-	devExpRank[0] = [0, 1, 2]
-	devExpRank[1] = [0, 1, 2]
-	devExpRank[2] = [2, 1, 0]
+	devExpRank[0] = [0]
+	# devExpRank[0] = [0, 1, 2]
+	# devExpRank[1] = [0, 1, 2]
+	# devExpRank[2] = [2, 1, 0]
 	
 
 	obj.handler(developerNum, TaskNum, expertWeight, devEstVal, devExpRank)
