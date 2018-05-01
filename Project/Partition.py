@@ -4,9 +4,7 @@ import numpy as np
 from Project.Task import Task
 from heapdict import heapdict
 
-#
-# Create obj for Partition
-# Run the hander(xx) function
+
 class Partition:
 	'''
 	Calculate the index of the expert based on Bonda vote algorithm
@@ -98,8 +96,8 @@ class Partition:
 					left += 1
 				else: # left val can not be filled with right val
 					dict[task_objects[right].index].append(task_objects[right].estVal)
-					right -= 1
 					task_objects[left].estVal += task_objects[right].estVal
+					right -= 1
 		return dict
 	
 	'''
@@ -187,6 +185,7 @@ class Partition:
 			# Form and solve problem.
 			prob = Problem(obj, list(constraints))
 			prob.solve()
+			#print('x value is ', x.value)
 			
 			# step 2: check: find the first index in matrix that is not an integer
 			# print('top: x value is ', x.value)
@@ -259,6 +258,7 @@ class Partition:
 		
 		# Step 2: calculate the E_mix
 		E_mix = self.calEstimationMix(devEstVal, expertIdx, expertWeight)
+		print(E_mix)
 		
 		# Step 3: partition the M tasks into feasible subTasks for IP
 		avg = self.calAverage(E_mix, developerNum)
@@ -268,6 +268,9 @@ class Partition:
 		# Step 4: update the E_mix and E_dev to E_mix_new and E_dev_new based on the subTasks
 		E_mix_new, E_dev_new, Task_prop = self.update(E_mix, devEstVal, dict)
 		
+		# print(E_mix_new)
+		# print(E_dev_new)
+		# print(Task_prop)
 		#return E_dev_new, E_mix_new
 		
 		# Step 5: Solve the IP and return the task assignment and task proportion
@@ -303,22 +306,24 @@ class Partition:
 
 if __name__ == '__main__':
 	obj = Partition()
-	developerNum = 2
-	TaskNum = 4
-	expertWeight = 0.8
+	developerNum = 3
+	TaskNum = 5
+	expertWeight = 0.6
 	
 	devEstVal = []
 	for i in range(developerNum):
 		devEstVal.append([])
 	
-	devEstVal[0] = [1, 12, 1, 3]
-	devEstVal[1] = [1, 15, 1, 5]
+	devEstVal[0] = [6, 7, 3, 8, 15]
+	devEstVal[1] = [4, 10, 2, 12,4]
+	devEstVal[2] = [5, 9, 4, 9, 6]
 	
 	devExpRank = []
 	for i in range(developerNum):
 		devExpRank.append([])
-	devExpRank[0] = [0, 1]
-	devExpRank[1] = [0, 1]
+	devExpRank[0] = [0, 1, 2]
+	devExpRank[1] = [0, 1, 2]
+	devExpRank[2] = [2, 1, 0]
 	
 
 	obj.handler(developerNum, TaskNum, expertWeight, devEstVal, devExpRank)
