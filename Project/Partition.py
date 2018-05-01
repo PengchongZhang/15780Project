@@ -228,7 +228,7 @@ class Partition:
 					new_result = new_prob.solve()
 					if new_prob.status == "optimal":
 						frontier[tuple(new_constraints), tuple(new_add_constraint)] = new_result
-
+      
 		return solved_puzzle, add_constraint
 	
 	'''
