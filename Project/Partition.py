@@ -164,15 +164,6 @@ class Partition:
 		
 		# Form and solve problem.
 		prob = Problem(obj, constraints)
-<<<<<<< HEAD
-		prob.solve()
-		print("status:", prob.status)
-		print("optimal value", prob.value)
-		print("x value is ", x.value)
-		
-		#Integer Programming
-		return prob.value
-=======
 		result = prob.solve()
 		#print("status:", prob.status)
 		#print("optimal value", prob.value)
@@ -183,7 +174,7 @@ class Partition:
 		# push the original solution to the frontier
 		frontier = heapdict()
 		frontier[tuple(constraints)] = result
->>>>>>> IPBranch
+
 
 		while len(frontier) > 0:
 			# step 1: pop the item with minimum f_value
@@ -288,17 +279,10 @@ class Partition:
 		#return E_dev_new, E_mix_new
 		
 		# Step 5: Solve the IP and return the task assignment and task proportion
-<<<<<<< HEAD
-		result = self.IPsolver(E_dev_new, E_mix_new, avg)
-		
-		return expertIdx, E_mix, result
-=======
+
 		result_twoDarray, optimal_value = self.IPsolver(E_dev_new, E_mix_new, avg)
 		self.test_shown(result_twoDarray)
 		print('result')
-	
-	
->>>>>>> IPBranch
 	'''
 	Test use: print each value in a two d array
 	'''
@@ -349,8 +333,8 @@ if __name__ == '__main__':
 	for i in range(developerNum):
 		devEstVal.append([])
 	
-	devEstVal[0] = [1, 1, 1]
-	devEstVal[1] = [1, 1, 1]
+	devEstVal[0] = [1123, 1, 1]
+	devEstVal[1] = [1, 112, 1]
 	
 	devExpRank = []
 	for i in range(developerNum):
