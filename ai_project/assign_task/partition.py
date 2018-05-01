@@ -112,8 +112,8 @@ class Partition:
                     left += 1
                 else:  # left val can not be filled with right val
                     dict[task_objects[right].index].append(task_objects[right].estVal)
-                    right -= 1
                     task_objects[left].estVal += task_objects[right].estVal
+                    right -= 1
         return dict
 
     '''

@@ -30,6 +30,8 @@ function cleanUpForm() {
     voteDiv.empty();
     voteDiv.hide();
     introVote.hide();
+    $('#res-est').empty();
+    $('#res-assign').empty();
     $('#task-number').val("");
     $('#developer-number').val("");
     $('#numbers').show();
@@ -113,6 +115,7 @@ $(document).ready(function () {
         voteDiv.show();
         introVote.show();
         $('#submit-btn').show();
+        $('#cancel-btn-1').show();
         intro.text("Esitame the work load of " + tasksNum + " tasks for " + devsNum + " developers.");
         intro.show();
         weightInput.show();
@@ -125,4 +128,9 @@ $(document).ready(function () {
         var url = inputForm.attr("action");
         $.post(url, formData).done(handleSolveRes);
     });
+
+    $('.cancel-btn').unbind('click').on('click', function (e) {
+        e.preventDefault();
+        cleanUpForm();
+    })
 });
