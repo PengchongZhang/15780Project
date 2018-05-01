@@ -270,7 +270,7 @@ class Partition:
     def handler(self, developerNum, TaskNum, expertWeight, devEstVal, devExpRank):
         # corner case:
         if developerNum == 1:
-            return devEstVal, devEstVal
+            return 0, devEstVal, [[1 for x in range(TaskNum)]]
 
         # Step 1: vote for expert
         expertIdx = self.bondaVote(devExpRank)
