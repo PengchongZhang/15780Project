@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assign Task</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static "js/assign.js" %}"></script>
+</head>
+<body>
+<h3>Task Estimation and Assignment</h3>
+<form action="#" id="task-form">
+    <div id="numbers">
+        {% csrf_token %}
+        <label for="task-number">Number of tasks:</label>
+        <input type="number" name="task-number" id="task-number" min="2" max="10">
+        <label for="developer-number">Number of developers:</label>
+        <input type="number" name="developer-number" id="developer-number" min="2" max="10">
+        <button id="numbers-btn">OK</button>
+    </div>
+    <div id="estimate-input" hidden>
+        <p>Please input the estimation for each task of each developers, use comma to separate values(eg. 5, 3, 4, 6, 2):</p>
+    </div>
+    <div id="vote-input" hidden>
+        <p>Please input the expert order of each developers, user comma to separate values(eg. 1, 3, 2):</p>
+    </div>
+    <button id="submit-btn" hidden>Submit</button>
+</form>
+<div id="assign-res" hidden></div>
+</body>
+</html>
