@@ -109,6 +109,7 @@ class Partition:
 	@:param: E_dev: the estimation value for each original task for each developer => N x M
 	@:return:E_dev_new: the estimation value for partitioned tasks # N * subTasksNum
 	@:return: E_mix_new: the estimation value for partioned tasks
+	@:return: Task_prop: a list of subTask size, each element: [subTask id, subTask Proportion]
 	'''
 	def update(self, E_mix, E_dev, dict):
 		N = len(E_dev)
@@ -116,6 +117,7 @@ class Partition:
 		
 		E_dev_new = []
 		E_mix_new = []
+		Task_prop = [] # size subTask, each is a list [taskId, prop to this taskId]
 		
 		for i in range(N):
 			E_dev_new.append([])  # N * numOfAllsubtasks
@@ -125,10 +127,12 @@ class Partition:
 			value = dict[key]
 			for e in value:
 				E_mix_new.append(e)
+				Task_prop.append([key, e / E_mix[key]])
 				for i in range(N):
 					val = E_dev[i][key] * (e / E_mix[key])
 					E_dev_new[i].append(val)
-		return E_mix_new, E_dev_new
+					
+		return E_mix_new, E_dev_new, Task_prop
 	
 	
 	'''
@@ -165,16 +169,11 @@ class Partition:
 		# Form and solve problem.
 		prob = Problem(obj, constraints)
 		result = prob.solve()
-		#print("status:", prob.status)
-		#print("optimal value", prob.value)
-		#print("x value is ", x.value)
-		#print("result is ", result)
 		
 		# Integer Programming
 		# push the original solution to the frontier
 		frontier = heapdict()
 		frontier[tuple(constraints)] = result
-
 
 		while len(frontier) > 0:
 			# step 1: pop the item with minimum f_value
@@ -206,10 +205,8 @@ class Partition:
 				prob = Problem(obj, new_constraints_zero)
 				result = prob.solve()
 				if prob.status == "optimal":
-					frontier[tuple(new_constraints_zero)] = (result, x)
-					#print("x value is ", x.value)
-				#print("x value is ", x.value)
-				
+					frontier[tuple(new_constraints_zero)] = result
+					
 				new_constraints_one = list(constraints)
 				new_constraints_one += [x[r, c] == 1]
 				target = mul_elemwise(E_dev_new_arr, x)
@@ -220,9 +217,7 @@ class Partition:
 				prob = Problem(obj, new_constraints_one)
 				result = prob.solve()
 				if prob.status == "optimal":
-					frontier[tuple(new_constraints_one)] = (result, x)
-					#print("x value is ", x.value)
-				#print("x value is ", x.value)
+					frontier[tuple(new_constraints_one)] = result
 		return self.twoDArray(N, subTask), 0
 		
 	'''
@@ -246,8 +241,6 @@ class Partition:
 				array[r].append(x.value[r, c])
 		return array
 	
-	
-	
 	'''
 	Main function handling whole logic
 	DevepolerNum: N
@@ -256,7 +249,6 @@ class Partition:
 	devEstVal: 2D array, N x M
 	devExpRank: 2D array, N x N
 	'''
-	
 	def handler(self, developerNum, TaskNum, expertWeight, devEstVal, devExpRank):
 		# corner case:
 		if developerNum == 1:
@@ -274,44 +266,30 @@ class Partition:
 		dict = self.partition(avg, task_objects)
 		
 		# Step 4: update the E_mix and E_dev to E_mix_new and E_dev_new based on the subTasks
-		E_mix_new, E_dev_new = self.update(E_mix, devEstVal, dict)
+		E_mix_new, E_dev_new, Task_prop = self.update(E_mix, devEstVal, dict)
 		
 		#return E_dev_new, E_mix_new
 		
 		# Step 5: Solve the IP and return the task assignment and task proportion
 
 		result_twoDarray, optimal_value = self.IPsolver(E_dev_new, E_mix_new, avg)
-		self.test_shown(result_twoDarray)
-		print('result')
+		result = self.cal_assignment(developerNum, TaskNum, result_twoDarray, Task_prop)
+		print('result is ', result)
+		
 	'''
 	Test use: print each value in a two d array
 	'''
-	def test_shown(self, twoDarray):
-		row = len(twoDarray)
-		col = len(twoDarray[0])
-		for r in range(row):
-			list = []
-			for c in range(col):
-				list.append(twoDarray[r][c])
-			print(list)
-	
-	
-	
-	'''
-	Helper function display the result
-	'''
-	# def format_result(self, twoDArray, value):
-	# 	row = len(twoDArray)
-	# 	col = len(twoDArray[0])
-	#
-	# 	for r in range(row):
-	# 		print('For developer ', r)
-	# 		for c in range(col):
-	# 			if twoDArray[r][c] < 0.005:
-	#
-	#
-	# 			print('The value : {}'.format(heuristic_misplaced(initState)))
-	
+	def cal_assignment(self, N, M, twoDarray, Task_prop):
+		dev_assignament = [[0 for y in range(M)] for x in range(N)]
+		
+		row = len(twoDarray) # developer idx
+		col = len(twoDarray[0]) # subTask
+		
+		for devIdx in range(row):
+			for subTask in range(col):
+				if twoDarray[devIdx][subTask] > 0.995: # do this subTask for this devIdx
+					dev_assignament[devIdx][Task_prop[subTask][0]] += Task_prop[subTask][1]
+		return dev_assignament
 	
 	'''
 	Helper function for testing
@@ -326,15 +304,15 @@ class Partition:
 if __name__ == '__main__':
 	obj = Partition()
 	developerNum = 2
-	TaskNum = 3
+	TaskNum = 4
 	expertWeight = 0.8
 	
 	devEstVal = []
 	for i in range(developerNum):
 		devEstVal.append([])
 	
-	devEstVal[0] = [1123, 1, 1]
-	devEstVal[1] = [1, 112, 1]
+	devEstVal[0] = [1, 12, 1, 3]
+	devEstVal[1] = [1, 15, 1, 5]
 	
 	devExpRank = []
 	for i in range(developerNum):
