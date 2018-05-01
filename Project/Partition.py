@@ -171,12 +171,7 @@ class Partition:
 		print("x value is ", x.value)
 		
 		#Integer Programming
-		
-		
-		
-		
-		
-		
+		return prob.value
 
 	'''
 	Main function handling whole logic
@@ -209,8 +204,9 @@ class Partition:
 		#return E_dev_new, E_mix_new
 		
 		# Step 5: Solve the IP and return the task assignment and task proportion
-		self.IPsolver(E_dev_new, E_mix_new, avg)
-	
+		result = self.IPsolver(E_dev_new, E_mix_new, avg)
+		
+		return expertIdx, E_mix, result
 	'''
 	Helper function for testing
 	'''
