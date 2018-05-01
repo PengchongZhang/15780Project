@@ -178,6 +178,13 @@ class Partition:
 		frontier[tuple(constraints)] = result
 		
 		# branch and bound
+		# step 1: find the first index in matrix that is not an integer
+		r, c = self.helper(E_dev_new_arr)
+		
+		
+		
+		
+		
 		
 		
 		while len(frontier) > 0:
@@ -225,16 +232,9 @@ class Partition:
 		for r in range(row):
 			for c in range(col):
 				if 0.005 <= twoDArray[r][c] <= 0.995: # not an integer
-				
-				
-			
-		
+					return r, c
+		return -1
 	
-	
-	
-	
-	
-
 	'''
 	Main function handling whole logic
 	DevepolerNum: N
