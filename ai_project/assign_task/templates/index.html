@@ -4,12 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Assign Task</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script type="text/javascript" src="{% static "js/assign.js" %}"></script>
 </head>
 <body>
 <h3>Task Estimation and Assignment</h3>
-<form action="#" id="task-form">
+<p id="intro" hidden></p>
+<form id="task-form" method="post" action={% url 'solve' %}>
     <div id="numbers">
         {% csrf_token %}
         <label for="task-number">Number of tasks:</label>
@@ -18,14 +17,45 @@
         <input type="number" name="developer-number" id="developer-number" min="2" max="10">
         <button id="numbers-btn">OK</button>
     </div>
+    <div id="weight-input" hidden>
+        <p>Please input the weight of the expert during estimation:</p>
+        <label for="expert-weight">Expert weight:</label>
+        <input id="expert-weight" name="expert-weight" type="number" step="0.01">
+    </div>
+    <p id="intro-est" hidden>Please input the estimation for each task of each developers, use comma to separate
+        values(eg. 5,
+        3, 4, 6,
+        2):</p>
     <div id="estimate-input" hidden>
-        <p>Please input the estimation for each task of each developers, use comma to separate values(eg. 5, 3, 4, 6, 2):</p>
+
     </div>
+    <p id="intro-vote" hidden>Please input the expert order of each developers, user comma to separate values(eg. 1, 3,
+        2):</p>
     <div id="vote-input" hidden>
-        <p>Please input the expert order of each developers, user comma to separate values(eg. 1, 3, 2):</p>
+
     </div>
+    <br>
     <button id="submit-btn" hidden>Submit</button>
 </form>
-<div id="assign-res" hidden></div>
+<div id="res" hidden>
+    <p>The number of tasks is <span id="res-task-number"></span>.</p>
+    <p>The number of developers is <span id="res-dev-number"></span>.</p>
+    <p>The voted expert is developer <span id="res-expert"></span></p>
+    <p>The weight of the expert's influence on the estimation is <span id="res-expert-weight"></span>.</p>
+    <p>The overall estimation of the workload for each task are as follows:</p>
+    <ul id="res-est">
+    </ul>
+    <p>The task assignment for each developer are as follows:</p>
+    <ul id="res-assign">
+        <!--li>developer 1
+            <ul id="assign-dev0">
+                <li>task: 1 proportion: 100%</li>
+            </ul>
+        </li-->
+    </ul>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="{% static "js/assign.js" %}"></script>
 </body>
 </html>
