@@ -2,6 +2,7 @@ import copy as cp
 from cvxpy import *
 import numpy as np
 from Project.Task import Task
+from heapdict import heapdict
 
 #
 # Create obj for Partition
@@ -165,18 +166,90 @@ class Partition:
 		
 		# Form and solve problem.
 		prob = Problem(obj, constraints)
-		prob.solve()
+		result = prob.solve()
 		print("status:", prob.status)
 		print("optimal value", prob.value)
 		print("x value is ", x.value)
+		print("result is ", result)
 		
-		#Integer Programming
+		# Integer Programming
+		# push the original solution to the frontier
+		frontier = heapdict()
+		frontier[tuple(constraints)] = result
+		
+		# branch and bound
 		
 		
 		
 		
 		
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		while len(frontier) > 0:
+			sol, obj = frontier.popitem()
+			new_prob = cp.Problem(objective, list(sol[0]))
+			new_prob.solve()
+			add_constraint = list(sol[1])
+			split_index = -1
+			diff = 0
+			split_constraint = []
+			for i in range(0, 9):
+				for j in range(0, 9):
+					for k in range(0, 9):
+						index = (i * 9 + j) * 9 + k
+						if x.value[index] > 0.995:
+							solved_puzzle[i][j] = k + 1
+						elif x.value[index] > 0.005:  # not integered value
+							if split_index == -1 or abs(x.value[index] - 0.5) < diff:
+								split_index = index
+								split_constraint = [i + 1, j + 1, k + 1]
+								diff = abs(x.value[index] - 0.5)
+
+			if split_index != -1:  # split and push to frontier
+				split_constraint.append(0)
+				for i in range(0, 2):
+					new_constraints = list(sol[0])
+					new_add_constraint = list(sol[1])
+					new_constraints += [x[split_index] == i]
+					split_constraint[3] = i
+					new_add_constraint.append(tuple(split_constraint))
+					new_prob = cp.Problem(objective, new_constraints)
+					new_result = new_prob.solve()
+					if new_prob.status == "optimal":
+						frontier[tuple(new_constraints), tuple(new_add_constraint)] = new_result
+
+		return solved_puzzle, add_constraint
+	
+	'''
+	helper function: find the smallest index whose value is not an integer
+	'''
+	def helper(self, twoDArray):
+		row = len(twoDArray)
+		col = len(twoDArray[0])
+		
+		for r in range(row):
+			for c in range(col):
+				if 0.005 <= twoDArray[r][c] <= 0.995: # not an integer
+				
+				
+			
+		
+	
+	
+	
+	
+	
 
 	'''
 	Main function handling whole logic
