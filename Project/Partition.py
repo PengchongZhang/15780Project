@@ -180,22 +180,6 @@ class Partition:
 		# branch and bound
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		while len(frontier) > 0:
 			sol, obj = frontier.popitem()
 			new_prob = cp.Problem(objective, list(sol[0]))
