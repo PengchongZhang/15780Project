@@ -1,0 +1,53 @@
+#project-intro {
+    padding-bottom: 50px;
+}
+
+#res p {
+    margin-bottom: 15px;
+}
+
+ul {
+    font-size: 18px;
+}
+
+footer {
+    background-color: rgba(15, 15, 15, 0.8);
+    color: #fff;
+}
+
+#numbers label, #weight-input label, #estimate-input label, #vote-input label {
+    font-size: 18px;
+    padding-bottom: 5px;
+}
+
+#numbers label {
+    width:220px;
+}
+
+#weight-input label, #estimate-input label, #vote-input label {
+    width: 300px;
+}
+
+#expert-weight, #estimate-input input, #vote-input input {
+    width: 250px;
+}
+
+#expert-weight, #estimate-input, #vote-input {
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding:6px 20px;
+}
+
+#numbers-btn {
+    margin-left:20px;
+}
+
+#developer-number, #task-number {
+    padding:3px;
+}
+
+#res .btn {
+    margin-top: 20px;
+}
