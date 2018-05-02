@@ -161,7 +161,6 @@ class Partition:
     @:param: E_mix_new
     @:return assigned tasks for each user
     '''
-
     def IPsolver(self, E_dev_new, E_mix_new, avg):
         N = len(E_dev_new)
         subTask = len(E_dev_new[0])
@@ -283,7 +282,6 @@ class Partition:
 
         # Step 2: calculate the E_mix
         E_mix = self.calEstimationMix(devEstVal, expertIdx, expertWeight)
-        #print(E_mix)
 
         # Step 3: partition the M tasks into feasible subTasks for IP
         avg = self.calAverage(E_mix, developerNum)
@@ -292,15 +290,11 @@ class Partition:
 
         # Step 4: update the E_mix and E_dev to E_mix_new and E_dev_new based on the subTasks
         E_mix_new, E_dev_new, Task_prop = self.update(E_mix, devEstVal, dict)
-        #print(E_mix_new)
-
-        # return E_dev_new, E_mix_new
 
         # Step 5: Solve the IP and return the task assignment and task proportion
 
         result_twoDarray, optimal_value = self.IPsolver(E_dev_new, E_mix_new, avg)
         result = self.cal_assignment(developerNum, TaskNum, result_twoDarray, Task_prop)
-        print('result is ', result)
         return expertIdx, E_mix, result
 
     '''
