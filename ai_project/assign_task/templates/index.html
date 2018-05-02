@@ -4,52 +4,114 @@
 <head>
     <meta charset="UTF-8">
     <title>Assign Task</title>
+    <link rel="stylesheet" type="text/css" href="{% static "lib/css/bootstrap.min.css" %}">
+    <link href="{% static "lib/css/theme.css" %}" rel="stylesheet">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700,400italic,700italic" rel="stylesheet"
+          type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="{% static "css/main.css" %}" rel="stylesheet">
 </head>
 <body>
-<h3>Task Estimation and Assignment</h3>
-<p id="intro" hidden></p>
-<form id="task-form" method="post" action={% url 'solve' %}>
-    <div id="numbers">
-        {% csrf_token %}
-        <label for="task-number">Number of tasks:</label>
-        <input type="number" name="task-number" id="task-number" min="1">
-        <label for="developer-number">Number of developers:</label>
-        <input type="number" name="developer-number" id="developer-number" min="1">
-        <button id="numbers-btn">OK</button>
+<header class="intro">
+    <div class="intro-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <h1 class="brand-heading">TASK ESTIMATION & ASSIGNMENT</h1>
+                    <p class="intro-text">
+                        15-780 ARTIFICIAL INTELLIGENCE PROJECT
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="weight-input" hidden>
-        <p>Please input the weight of the expert during estimation:</p>
-        <label for="expert-weight">Expert weight:</label>
-        <input id="expert-weight" name="expert-weight" type="number" step="0.01">
-    </div>
-    <p id="intro-est" hidden>Please input the estimation for each task of each developers, use comma to separate
-        values(eg. 5,
-        3, 4, 6,
-        2):</p>
-    <div id="estimate-input" hidden>
+</header>
 
-    </div>
-    <p id="intro-vote" hidden>Please input the expert order of each developers, user comma to separate values(eg. 1, 3,
-        2):</p>
-    <div id="vote-input" hidden>
+<div class="container content-section">
+    <div class="row">
+        <div id="project-intro">
+            <h2>The Scenario</h2>
+            <p>Imagine you have N developers working together on a project which can be divided into M tasks. The N
+                developers each has his/her own estimation of workload for each of the M tasks. Now for this team to
+                work out, you wish to obtain an overall estimation of the M tasks, and assign these M tasks to the N
+                developers.</p>
+            <p>To make the estimation as reliable as possible, you would like to vote an expert out of the N developers
+                and put more weight on the estimation of the expert. You would also like to assign the tasks such that
+                everybody are doing the same amount of work while in the meantime, each developer thinks that he/she
+                does as little as possible according to his/her own estimation.
+            </p>
+        </div>
 
+
+        <div id="calculate">
+
+            <p id="intro" hidden></p>
+
+            <form id="task-form" method="post" action={% url 'solve' %}>
+                {% csrf_token %}
+
+                <div id="numbers">
+                    <div class="form-entry">
+                        <label for="task-number">Number of tasks:</label>
+                        <input type="number" name="task-number" id="task-number" min="1" class="col-8">
+                    </div>
+                    <div class="form-entry">
+                        <label for="developer-number">Number of developers:</label>
+                        <input type="number" name="developer-number" id="developer-number" min="1">
+                        <button id="numbers-btn" class="btn">OK</button>
+                    </div>
+                </div>
+
+                <div id="weight-input" hidden>
+                    <p>Please input the weight of the expert during estimation:</p>
+                    <label for="expert-weight">Expert weight:</label>
+                    <input id="expert-weight" name="expert-weight" type="number" step="0.01">
+                </div>
+
+                <p id="intro-est" hidden>Please input the estimation for each task of each developers, use comma to
+                    separate
+                    values(eg. 5,
+                    3, 4, 6,
+                    2):</p>
+                <div id="estimate-input" hidden>
+
+                </div>
+                <p id="intro-vote" hidden>Please input the expert order of each developers, user comma to separate
+                    values(eg. 1, 3,
+                    2):</p>
+                <div id="vote-input" hidden>
+
+                </div>
+                <br>
+                <button id="submit-btn" class="btn" hidden>Submit</button>
+                <button class="cancel-btn btn" id="cancel-btn-1" hidden>go back</button>
+            </form>
+        </div>
+
+        <div id="res" hidden>
+            <!--div id="res" hidden-->
+            <p>The number of tasks is <span id="res-task-number"></span>.</p>
+            <p>The number of developers is <span id="res-dev-number"></span>.</p>
+            <p>The voted expert is developer <span id="res-expert"></span></p>
+            <p>The weight of the expert's influence on the estimation is <span id="res-expert-weight"></span>.</p>
+            <p>The overall estimation of the workload for each task are as follows:</p>
+            <ul id="res-est">
+            </ul>
+            <p>The task assignment for each developer are as follows:</p>
+            <ul id="res-assign">
+            </ul>
+            <button class="cancel-btn btn" id="cancel-btn-2">go back</button>
+        </div>
     </div>
-    <br>
-    <button id="submit-btn" hidden>Submit</button><button class="cancel-btn" id="cancel-btn-1" hidden>go back</button>
-</form>
-<div id="res" hidden>
-    <p>The number of tasks is <span id="res-task-number"></span>.</p>
-    <p>The number of developers is <span id="res-dev-number"></span>.</p>
-    <p>The voted expert is developer <span id="res-expert"></span></p>
-    <p>The weight of the expert's influence on the estimation is <span id="res-expert-weight"></span>.</p>
-    <p>The overall estimation of the workload for each task are as follows:</p>
-    <ul id="res-est">
-    </ul>
-    <p>The task assignment for each developer are as follows:</p>
-    <ul id="res-assign">
-    </ul>
-    <button class="cancel-btn" id="cancel-btn-2">go back</button>
 </div>
+
+<footer>
+    <div class="container text-center">
+        <p class="credits">
+            CMU 15-780 18Spring &copy; Jing Xu & Pengchong Zhang<br/>
+        </p>
+    </div>
+</footer>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="{% static "js/assign.js" %}"></script>

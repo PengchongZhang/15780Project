@@ -84,6 +84,8 @@ function handleSolveRes (data) {
 
 $(document).ready(function () {
     inputForm = $('#task-form');
+    $('#submit-btn').hide();
+    $('#cancel-btn-1').hide();
 
     $('#numbers-btn').unbind('click').on('click', function (e) {
         e.preventDefault();
@@ -111,7 +113,7 @@ $(document).ready(function () {
         introEst.show();
         for (var j = 0; j < devsNum; j++) {  // append text input for vote order
             var voteId = 'vote-dev' + j;
-            var voteLabel = $('<label>').attr({for: voteId}).text('expert order of developer' + (j + 1));
+            var voteLabel = $('<label>').attr({for: voteId}).text('expert order of developer ' + (j + 1));
             var voteInput = $('<input required>').attr({type: 'text', name: voteId, id: voteId});
             voteDiv.append(voteLabel);
             voteDiv.append(voteInput);
