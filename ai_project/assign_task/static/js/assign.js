@@ -123,7 +123,7 @@ $(document).ready(function () {
         introVote.show();
         $('#submit-btn').show();
         $('#cancel-btn-1').show();
-        intro.text("Esitame the work load of " + tasksNum + " tasks for " + devsNum + " developers.");
+        intro.text("Estimate the work load of " + tasksNum + " tasks for " + devsNum + " developers.");
         intro.show();
         weightInput.show();
     });
